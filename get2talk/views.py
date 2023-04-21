@@ -1,12 +1,13 @@
 from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.views.generic import View
 from django.views.generic.edit import CreateView
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from .forms import StudentForm
-from .models import Teacher, Student
+from .models import Teacher, Student, Lesson
+from datetime import datetime
 
 
 def login_view(request):
@@ -67,5 +68,32 @@ class AddNewStudentView(CreateView):
 
 
 @login_required
-def working_hours_view(request):
-    return render(request, "working_hours.html")
+def lessons_view(request):
+    teacher = Teacher.objects.get(user=request.user)
+    students = Student.objects.filter(teacher=teacher)
+
+    if request.method == "POST":
+        student_id = request.POST.get("student")
+        student = get_object_or_404(Student, pk=student_id, teacher=teacher)
+        lesson_date = request.POST.get("lesson_date")
+        duration = request.POST.get("duration")
+        lesson = Lesson.objects.create(
+            student=student, teacher=teacher, date=lesson_date, duration=duration
+        )
+        lesson.save()
+        return redirect("lessons")
+
+    selected_month = request.GET.get("month")
+    if not selected_month:
+        selected_month = datetime.today().month
+    lessons = Lesson.objects.filter(
+        teacher=teacher, student__teacher=teacher, date__month=selected_month
+    )
+
+    context = {
+        "teacher": teacher,
+        "students": students,
+        "lessons": lessons,
+        "selected_month": selected_month,
+    }
+    return render(request, "lesson_records.html", context)

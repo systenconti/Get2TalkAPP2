@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block title %}Report Lesson{% endblock %}
+
+{% block css %}
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th,
+    td {
+        text-align: left;
+        padding: 8px;
+        border: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    .month-selector {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .month-selector label {
+        margin-right: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<h2>Report Lesson</h2>
+<form method="post">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="student">Student:</label>
+        <select name="student" class="form-control" required>
+            {% for student in students %}
+            <option value="{{ student.id }}">{{ student.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="lesson_date">Lesson Date:</label>
+        <input type="date" name="lesson_date" class="form-control" required>
+    </div>
+    <div class="form-group">
+        <label for="duration">Duration:</label>
+        <input type="number" name="duration" class="form-control" required>
+    </div>
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary">Report Lesson</button>
+    </div>
+</form>
+
+<div class="month-selector">
+    <label for="month">Select Month:</label>
+    <select name="month" id="month">
+        <option value="1">January</option>
+        <option value="2">February</option>
+        <option value="3">March</option>
+        <option value="4">April</option>
+        <option value="5">May</option>
+        <option value="6">June</option>
+        <option value="7">July</option>
+        <option value="8">August</option>
+        <option value="9">September</option>
+        <option value="10">October</option>
+        <option value="11">November</option>
+        <option value="12">December</option>
+    </select>
+</div>
+{% if lessons %}
+<table>
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Student</th>
+            <th>Duration (minutes)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for lesson in lessons %}
+        <tr>
+            <td>{{ lesson.date }}</td>
+            <td>{{ lesson.student.name }}</td>
+            <td>{{ lesson.duration }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No lessons found for the selected month.</p>
+{% endif %}
+{% endblock %}
+
+{% block js %}
+<script>
+    const monthSelect = document.querySelector('#month');
+    monthSelect.addEventListener('change', (event) => {
+        const selectedMonth = event.target.value;
+        const lessons = document.querySelectorAll('tbody tr');
+        lessons.forEach((lesson) => {
+            if (lesson.firstElementChild.textContent.startsWith(selectedMonth)) {
+                lesson.style.display = '';
+            } else {
+                lesson.style.display = 'none';
+            }
+        });
+    });
+</script>
+{% endblock %}
