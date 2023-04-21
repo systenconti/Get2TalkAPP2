@@ -2,28 +2,79 @@
 
 {% block title %}Dashboard{% endblock %}
 
+{% block css %}
+<style>
+    /* Customize the search box */
+    #search-box {
+        width: 100%;
+        padding: 8px 20px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+        margin-bottom: 12px;
+    }
+
+    /* Customize the table */
+    .table-container {
+        overflow-x: auto;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <h2>Hi, here's your student's list, {{ teacher.user.first_name }}:</h2>
-<table class="table table-hover">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Mobile Number</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for student in students %}
-        <tr>
-            <td>{{ student.name }}</td>
-            <td>{{ student.mobile_number }}</td>
-            <td>
-                <form action="{% url 'edit_student' student.id %}" method="get">
-                    <button type="submit" class="btn btn-primary">Edit Info</button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+
+<!-- Add the search box -->
+<div class="input-group mb-3">
+    <input type="text" class="form-control" placeholder="Search by name" id="search-box">
+</div>
+
+<!-- Wrap the table in a container to enable horizontal scrolling -->
+<div class="table-container">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Mobile Number</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in students %}
+            <tr>
+                <td>{{ student.name }}</td>
+                <td>{{ student.mobile_number }}</td>
+                <td>
+                    <form action="{% url 'edit_student' student.id %}" method="get">
+                        <button type="submit" class="btn btn-primary">Edit Info</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+    $(document).ready(function () {
+        var searchBox = $('#search-box');
+
+        searchBox.keyup(function () {
+            var query = searchBox.val().toLowerCase();
+
+            $('table tbody tr').each(function () {
+                var row = $(this);
+
+                if (row.find('td:first-child').text().toLowerCase().indexOf(query) === -1) {
+                    row.hide();
+                } else {
+                    row.show();
+                }
+            });
+        });
+    });
+</script>
 {% endblock %}
