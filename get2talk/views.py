@@ -28,7 +28,7 @@ def logout_view(request):
     return redirect("login")
 
 
-@login_required()
+@login_required
 def dashboard_view(request):
     teacher = Teacher.objects.get(user=request.user)
     students = Student.objects.filter(teacher=teacher)
