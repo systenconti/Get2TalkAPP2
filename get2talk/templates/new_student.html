@@ -1,7 +1,12 @@
 {% extends 'base.html' %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}Add New Student{% endblock %}
 
 {% block content %}
-<h1>Here you can add a new student</h1>
+<h2>Add Student</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Add</button>
+</form>
 {% endblock %}

@@ -3,5 +3,27 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<h1>YOU LOGGED IN</h1>
+<h2>Hi, here's your student's list, {{ teacher.user.first_name }}:</h2>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Mobile Number</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for student in students %}
+        <tr>
+            <td>{{ student.name }}</td>
+            <td>{{ student.mobile_number }}</td>
+            <td>
+                <form action="{% url 'edit_student' student.id %}" method="get">
+                    <button type="submit" class="btn btn-primary">Edit Info</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}
