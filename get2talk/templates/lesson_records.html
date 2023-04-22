@@ -20,15 +20,9 @@
         background-color: #f2f2f2;
     }
 
-    .month-selector {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-bottom: 20px;
-    }
-
-    .month-selector label {
-        margin-right: 10px;
+    .table-container {
+        height: 300px;
+        overflow-y: scroll;
     }
 </style>
 {% endblock %}
@@ -57,43 +51,37 @@
         <button type="submit" class="btn btn-primary">Report Lesson</button>
     </div>
 </form>
-
-<div class="month-selector">
-    <label for="month">Select Month:</label>
-    <select name="month" id="month">
-        <option value="1">January</option>
-        <option value="2">February</option>
-        <option value="3">March</option>
-        <option value="4">April</option>
-        <option value="5">May</option>
-        <option value="6">June</option>
-        <option value="7">July</option>
-        <option value="8">August</option>
-        <option value="9">September</option>
-        <option value="10">October</option>
-        <option value="11">November</option>
-        <option value="12">December</option>
-    </select>
-</div>
 {% if lessons %}
-<table>
-    <thead>
-        <tr>
-            <th>Date</th>
-            <th>Student</th>
-            <th>Duration (minutes)</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for lesson in lessons %}
-        <tr>
-            <td>{{ lesson.date }}</td>
-            <td>{{ lesson.student.name }}</td>
-            <td>{{ lesson.duration }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+
+<div class="mt-3">
+    <label for="name-filter">Filter by Student's Name:</label>
+    <input type="text" id="name-filter" name="name-filter" class="form-control">
+
+    <label for="date-filter">Filter by Date:</label>
+    <input type="date" id="date-filter" name="date-filter" class="form-control">
+
+    <button id="clear-filters" class="btn btn-primary mt-3">Clear All Filters</button>
+</div>
+<div class="table-container">
+    <table id="lesson-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Student</th>
+                <th>Duration (minutes)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for lesson in lessons %}
+            <tr class="lesson-row" data-student="{{ lesson.student.name }}" data-date="{{ lesson.date }}">
+                <td>{{ lesson.date }}</td>
+                <td>{{ lesson.student.name }}</td>
+                <td>{{ lesson.duration }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% else %}
 <p>No lessons found for the selected month.</p>
 {% endif %}
@@ -101,17 +89,46 @@
 
 {% block js %}
 <script>
-    const monthSelect = document.querySelector('#month');
-    monthSelect.addEventListener('change', (event) => {
-        const selectedMonth = event.target.value;
-        const lessons = document.querySelectorAll('tbody tr');
-        lessons.forEach((lesson) => {
-            if (lesson.firstElementChild.textContent.startsWith(selectedMonth)) {
-                lesson.style.display = '';
-            } else {
-                lesson.style.display = 'none';
-            }
+    $(document).ready(function () {
+        var nameFilter = $('#name-filter');
+        var dateFilter = $('#date-filter');
+
+        nameFilter.on('keyup', function () {
+            var query = nameFilter.val().toLowerCase();
+
+            $('.lesson-row').each(function () {
+                var row = $(this);
+                var student = row.data('student').toLowerCase();
+
+                if (student.indexOf(query) === -1) {
+                    row.hide();
+                } else {
+                    row.show();
+                }
+            });
         });
+
+        dateFilter.on('change', function () {
+            var query = dateFilter.val();
+
+            $('.lesson-row').each(function () {
+                var row = $(this);
+                var date = new Date(row.data('date'));
+                var dateString = date.getFullYear() + '-' + (date.getMonth() + 1).toString().padStart(2, '0') + '-' + date.getDate().toString().padStart(2, '0');
+
+                if (dateString !== query) {
+                    row.hide();
+                } else {
+                    row.show();
+                }
+            });
+        });
+    });
+
+    $('#clear-filters').on('click', function () {
+        $('#name-filter').val('');
+        $('#date-filter').val('');
+        $('.lesson-row').show();
     });
 </script>
 {% endblock %}

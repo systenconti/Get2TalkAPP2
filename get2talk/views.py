@@ -71,6 +71,7 @@ class AddNewStudentView(CreateView):
 def lessons_view(request):
     teacher = Teacher.objects.get(user=request.user)
     students = Student.objects.filter(teacher=teacher)
+    lessons = Lesson.objects.filter(teacher=teacher)
 
     if request.method == "POST":
         student_id = request.POST.get("student")
@@ -83,17 +84,10 @@ def lessons_view(request):
         lesson.save()
         return redirect("lessons")
 
-    selected_month = request.GET.get("month")
-    if not selected_month:
-        selected_month = datetime.today().month
-    lessons = Lesson.objects.filter(
-        teacher=teacher, student__teacher=teacher, date__month=selected_month
-    )
 
     context = {
         "teacher": teacher,
         "students": students,
         "lessons": lessons,
-        "selected_month": selected_month,
     }
     return render(request, "lesson_records.html", context)
