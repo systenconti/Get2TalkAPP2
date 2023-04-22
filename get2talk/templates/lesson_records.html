@@ -78,14 +78,14 @@
                 <td>{{ lesson.date }}</td>
                 <td>{{ lesson.student.name }}</td>
                 <td>{{ lesson.duration }}</td>
-                <td><button class="delete-lesson-btn" data-lesson-id="{{ lesson.id }}">Delete</button></td>
+                <td><button class="delete-lesson-btn btn btn-primary" data-lesson-id="{{ lesson.id }}">Delete</button></td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 </div>
 {% else %}
-<p>No lessons found for the selected month.</p>
+<p>No lessons found.</p>
 {% endif %}
 {% endblock %}
 
