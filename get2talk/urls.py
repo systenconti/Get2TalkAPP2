@@ -9,4 +9,5 @@ urlpatterns = [
     path("add/", AddNewStudentView.as_view(), name="add_new_student"),
     path("edit/<int:pk>/", EditStudentView.as_view(), name="edit_student"),
     path("lessons/", views.lessons_view, name="lessons"),
+    path("lessons/delete-lesson/<int:lesson_id>/", views.delete_lesson, name="delete_lesson"),
 ]

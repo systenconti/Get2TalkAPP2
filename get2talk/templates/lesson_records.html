@@ -69,6 +69,7 @@
                 <th>Date</th>
                 <th>Student</th>
                 <th>Duration (minutes)</th>
+                <th>Delete</th>
             </tr>
         </thead>
         <tbody>
@@ -77,6 +78,7 @@
                 <td>{{ lesson.date }}</td>
                 <td>{{ lesson.student.name }}</td>
                 <td>{{ lesson.duration }}</td>
+                <td><button class="delete-lesson-btn" data-lesson-id="{{ lesson.id }}">Delete</button></td>
             </tr>
             {% endfor %}
         </tbody>
@@ -129,6 +131,23 @@
         $('#name-filter').val('');
         $('#date-filter').val('');
         $('.lesson-row').show();
+    });
+
+    $(document).on('click', '.delete-lesson-btn', function () {
+        var lessonId = $(this).data('lesson-id');
+        var confirmation = confirm('Are you sure you want to delete this lesson?');
+        if (confirmation) {
+            $.ajax({
+                url: '/lessons/delete-lesson/' + lessonId + '/',
+                method: 'POST',
+                beforeSend: function (xhr, settings) {
+                    xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}")
+                },
+                success: function (response) {
+                    location.reload();
+                }
+            });
+        }
     });
 </script>
 {% endblock %}

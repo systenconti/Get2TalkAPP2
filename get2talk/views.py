@@ -5,6 +5,7 @@ from django.views.generic import View
 from django.views.generic.edit import CreateView
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
+from django.http import JsonResponse
 from .forms import StudentForm
 from .models import Teacher, Student, Lesson
 from datetime import datetime
@@ -84,10 +85,19 @@ def lessons_view(request):
         lesson.save()
         return redirect("lessons")
 
-
     context = {
         "teacher": teacher,
         "students": students,
         "lessons": lessons,
     }
     return render(request, "lesson_records.html", context)
+
+
+@login_required
+def delete_lesson(request, lesson_id):
+    if request.method == "POST":
+        lesson = get_object_or_404(Lesson, id=lesson_id)
+        lesson.delete()
+        return JsonResponse({"success": True})
+    else:
+        return JsonResponse({'success': False, 'message': 'There was an error.'})
