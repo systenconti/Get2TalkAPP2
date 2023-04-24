@@ -9,6 +9,7 @@ from django.http import JsonResponse
 from .forms import StudentForm
 from .models import Teacher, Student, Lesson
 from datetime import datetime
+from collections import defaultdict
 
 
 def login_view(request):
@@ -100,4 +101,28 @@ def delete_lesson(request, lesson_id):
         lesson.delete()
         return JsonResponse({"success": True})
     else:
-        return JsonResponse({'success': False, 'message': 'There was an error.'})
+        return JsonResponse({"success": False, "message": "There was an error."})
+
+
+@login_required
+def report_view(request):
+    teacher = Teacher.objects.get(user=request.user)
+    month = request.GET.get("month")
+    year = request.GET.get("year")
+    lessons = Lesson.objects.filter(teacher=teacher, date__month=month, date__year=year)
+    total_duration = list(lessons.values_list("duration"))
+    total_duration_converted = [duration[0] for duration in total_duration]
+    total_duration_converted = sum(total_duration_converted) / 60
+    dates = lessons.dates("date", "day", "ASC")
+    dates = list(dates)
+    durations_by_days = defaultdict()
+    durations_by_days = dict(durations_by_days)
+    for date in dates:
+        durations = list(
+            Lesson.objects.filter(teacher=teacher, date=date).values_list("duration")
+        )
+        total_duration_daily = sum([duration[0] for duration in durations])
+        durations_by_days[date] = total_duration_daily
+    print(durations_by_days)
+    context = {"durations_by_days": durations_by_days, "total_duration": total_duration_converted}
+    return render(request, "reports.html", context)
