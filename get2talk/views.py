@@ -5,11 +5,11 @@ from django.views.generic import View
 from django.views.generic.edit import CreateView
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from .forms import StudentForm
 from .models import Teacher, Student, Lesson
-from datetime import datetime
-from collections import defaultdict
+from fpdf import FPDF
+import os
 
 
 def login_view(request):
@@ -104,11 +104,7 @@ def delete_lesson(request, lesson_id):
         return JsonResponse({"success": False, "message": "There was an error."})
 
 
-@login_required
-def report_view(request):
-    teacher = Teacher.objects.get(user=request.user)
-    month = request.GET.get("month")
-    year = request.GET.get("year")
+def get_dates_and_duration(request, teacher=None, month=None, year=None):
     lessons = Lesson.objects.filter(teacher=teacher, date__month=month, date__year=year)
     total_duration = list(lessons.values_list("duration"))
     total_duration_converted = [duration[0] for duration in total_duration]
@@ -121,8 +117,73 @@ def report_view(request):
             Lesson.objects.filter(teacher=teacher, date=date).values_list("duration")
         )
         total_duration_daily = sum([duration[0] for duration in durations])
-        if date not in  durations_by_days:
+        if date not in durations_by_days:
             durations_by_days[date] = 0
         durations_by_days[date] += total_duration_daily
-    context = {"durations_by_days": durations_by_days, "total_duration": total_duration_converted}
+    context = {
+        "durations_by_days": durations_by_days,
+        "total_duration": total_duration_converted,
+    }
+    return context
+
+
+@login_required
+def report_view(request):
+    teacher = Teacher.objects.get(user=request.user)
+    month = request.GET.get("month")
+    year = request.GET.get("year")
+    context = get_dates_and_duration(request, teacher=teacher, month=month, year=year)
     return render(request, "reports.html", context)
+
+
+@login_required
+def generate_pdf(request):
+    month = request.GET.get("month")
+    year = request.GET.get("year")
+    teacher = Teacher.objects.get(user=request.user)
+    context = get_dates_and_duration(request, teacher=teacher, month=month, year=year)
+
+    pdf = FPDF(orientation="P", unit="mm", format="A4")
+    pdf.add_page()
+
+    pdf.add_font(
+        "DejaVu", "", R"dejavu-fonts-ttf-2.37\ttf\DejaVuSans-Bold.ttf", uni=True
+    )
+    pdf.set_font(family="Dejavu", size=24)
+    pdf.cell(w=0, h=18, txt="Ewidencja czasu pracy", ln=1)
+    pdf.set_font_size(14)
+    pdf.cell(
+        w=0,
+        h=10,
+        txt=f"Pracownik: {teacher.user.first_name} {teacher.user.last_name}",
+        ln=1,
+    )
+    pdf.cell(w=0, h=10, txt=f"Miesiąc: {month}", ln=1)
+    pdf.cell(w=0, h=10, txt="Firma: Get2Talk", ln=1)
+
+    pdf.ln(10)
+
+    pdf.set_font(family="Times", size=12, style="B")
+    pdf.cell(w=50, h=10, txt="Data", border=1)
+    pdf.cell(w=50, h=10, txt="Czas pracy", border=1, ln=1)
+
+    pdf.set_font(family="Times", size=10)
+    for date, duration in context["durations_by_days"].items():
+        pdf.cell(w=50, h=5, txt=f"{date}", border=1)
+        pdf.cell(w=50, h=5, txt=f"{duration} minut", border=1, ln=1)
+
+    pdf.ln(10)
+
+    pdf.set_font(family="Dejavu", size=18)
+    pdf.cell(w=0, h=30, txt=f"Całkowity czas pracy: {context['total_duration']}")
+
+    pdf.output("ewidencja.pdf")
+
+    with open("ewidencja.pdf", "rb") as f:
+        pdf_data = f.read()
+
+    response = HttpResponse(pdf_data, content_type="application/pdf")
+    response["Content-Disposition"] = 'attachment; filename="ewidencja.pdf"'
+
+    os.remove("ewidencja.pdf")
+    return response

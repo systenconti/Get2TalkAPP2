@@ -15,4 +15,5 @@ urlpatterns = [
         name="delete_lesson",
     ),
     path("reports/", views.report_view, name="reports"),
+    path("reports/download/", views.generate_pdf, name="generate_pdf"),
 ]

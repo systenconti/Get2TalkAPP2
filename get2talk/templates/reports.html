@@ -9,7 +9,7 @@
                 <div class="card-header">Monthly Report</div>
 
                 <div class="card-body">
-                    <form action="{% url 'reports' %}" method="get">
+                    <form id="report-form" action="{% url 'reports' %}" method="get">
                         <div class="form-group row">
                             <label for="month" class="col-md-4 col-form-label text-md-right">Month:</label>
                             <div class="col-md-6">
@@ -44,7 +44,7 @@
                             </div>
                         </div>
                     </form>
-
+                    {% if durations_by_days %}
                     <br>
 
                     <table class="table table-striped">
@@ -69,6 +69,12 @@
                     <h1>Total duration:</h1>
                     </br>
                     {{ total_duration }} hours
+                    <div class="text-center">
+                        <a id="download-pdf-btn"
+                            href="{% url 'generate_pdf' %}?month={{ request.GET.month }}&year={{ request.GET.year }}"
+                            class="btn btn-primary">Download PDF</a>
+                            {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
