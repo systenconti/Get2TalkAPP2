@@ -115,14 +115,14 @@ def report_view(request):
     total_duration_converted = sum(total_duration_converted) / 60
     dates = lessons.dates("date", "day", "ASC")
     dates = list(dates)
-    durations_by_days = defaultdict()
-    durations_by_days = dict(durations_by_days)
+    durations_by_days = {}
     for date in dates:
         durations = list(
             Lesson.objects.filter(teacher=teacher, date=date).values_list("duration")
         )
         total_duration_daily = sum([duration[0] for duration in durations])
-        durations_by_days[date] = total_duration_daily
-    print(durations_by_days)
+        if date not in  durations_by_days:
+            durations_by_days[date] = 0
+        durations_by_days[date] += total_duration_daily
     context = {"durations_by_days": durations_by_days, "total_duration": total_duration_converted}
     return render(request, "reports.html", context)
