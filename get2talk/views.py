@@ -175,7 +175,7 @@ def generate_pdf(request):
     pdf.ln(10)
 
     pdf.set_font(family="Dejavu", size=18)
-    pdf.cell(w=0, h=30, txt=f"Całkowity czas pracy: {context['total_duration']}")
+    pdf.cell(w=0, h=30, txt=f"Całkowity czas pracy: {context['total_duration']} godzin")
 
     pdf.output("ewidencja.pdf")
 
