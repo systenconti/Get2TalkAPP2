@@ -24,7 +24,6 @@ fully functional and deployed to pythonanywhere.com.
 
 
 ## Features
-List the ready features here:
 - Add and edit students
 - Download monthly report PDF
 - Report lesson for particular student
