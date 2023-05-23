@@ -6,6 +6,7 @@ Language school staff management app.
 * [General Info](#general-information)
 * [Technologies Used](#technologies-used)
 * [Features](#features)
+* [Screenshots](#screenshots)
 * [Project Status](#project-status)
 * [Contact](#contact)
 
@@ -22,6 +23,12 @@ fully functional and deployed to pythonanywhere.com.
 - Django - version 4.2
 - psycopg2-binary - version 2.9.6
 
+## Screenshots
+![Screenshot1](./screenshots/screenshot1.png)
+![Screenshot2](./screenshots/screenshot2.png)
+![Screenshot3](./screenshots/screenshot3.png)
+![Screenshot4](./screenshots/screenshot4.png)
+![Screenshot5](./screenshots/screenshot5.png)
 
 ## Features
 - Add and edit students
