@@ -1,13 +1,15 @@
+from typing import Any, Dict
 from django.contrib.auth import authenticate, login, logout
+from django.db.models.query import QuerySet
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.views.generic import View
+from django.views.generic import View, ListView
 from django.views.generic.edit import CreateView
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.http import JsonResponse, HttpResponse
 from .forms import StudentForm
-from .models import Teacher, Student, Lesson
+from .models import Teacher, Student, Lesson, Suggestion
 from fpdf import FPDF
 import os
 
@@ -187,3 +189,14 @@ def generate_pdf(request):
 
     os.remove("ewidencja.pdf")
     return response
+
+
+@method_decorator(login_required, name="dispatch")
+class SuggestionList(ListView):
+    model = Suggestion
+    template_name = "suggestion.html"
+
+    def get_queryset(self) -> QuerySet[Any]:
+        queryset = super().get_queryset()
+        queryset = queryset.filter(user=self.request.user).order_by("-date_submitted")
+        return queryset
