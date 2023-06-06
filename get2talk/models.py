@@ -35,6 +35,7 @@ class Suggestion(models.Model):
     date_submitted = models.DateTimeField(auto_now_add=True)
     reviewed = models.BooleanField(default=False)
     approved = models.BooleanField(default=False)
+    supervisor_comment = models.CharField(max_length=3000, null=True)
 
     def __str__(self) -> str:
         return self.title

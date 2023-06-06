@@ -7,7 +7,7 @@
 <a href="{% url 'new_suggestion' %}">
     <h2>Add new suggestion</h2>
 </a>
-<h1>Your suggestions {{ user.first_name }}:</h1>
+<h1>Your suggestions, {{ user.first_name }}:</h1>
 {% for suggestion in suggestion_list %}
 <a href="{% url 'suggestion_detail' suggestion.pk %}">
     <p>{{ suggestion }}</p>
