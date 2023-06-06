@@ -2,12 +2,42 @@
 
 {% block title %}Add New Suggestion{% endblock %}
 
+{% block css %}
+<style>
+    .label-cell {
+        font-weight: bold;
+    }
+
+    .title-field {
+        width: 600px;
+        resize: none;
+        overflow-y: auto;
+    }
+
+    .description-field {
+        width: 600px;
+        height: 400px;
+        resize: none;
+        overflow-y: auto;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <h2>Add Suggestion</h2>
 <form method="post">
     {% csrf_token %}
-    <table class="table table-hover">
-        {{ form.as_table }}
+    <table class="table table-hover mt-5">
+        <tr>
+            <td class="label-cell">{{ form.title.label_tag }}</td>
+            <td><textarea name="{{ form.title.name }}" class="form-control title-field"
+                    maxlength="{{ form.title.field.max_length }}"></textarea></td>
+        </tr>
+        <tr>
+            <td class="label-cell">{{ form.description.label_tag }}</td>
+            <td><textarea name="{{ form.description.name }}" class="form-control description-field"
+                    maxlength="{{ form.description.field.max_length }}"></textarea></td>
+        </tr>
     </table>
     <button type="submit" class="btn btn-primary">Add</button>
 </form>

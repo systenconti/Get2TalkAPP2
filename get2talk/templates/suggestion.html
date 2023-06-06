@@ -1,16 +1,56 @@
 {% extends 'base.html' %}
 
 {% block title %}Your suggestions{% endblock %}
+{% block css %}
+<style>
+    .table-container {
+        overflow-x: auto;
+    }
+
+    .icon-cell {
+        text-align: center;
+    }
+
+    .icon-cell i {
+        font-size: 1.5em;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
 
 <a href="{% url 'new_suggestion' %}">
-    <h2>Add new suggestion</h2>
+    <button class="btn btn-primary">Add new suggestion</button>
 </a>
-<h1>Your suggestions, {{ user.first_name }}:</h1>
-{% for suggestion in suggestion_list %}
-<a href="{% url 'suggestion_detail' suggestion.pk %}">
-    <p>{{ suggestion }}</p>
-</a>
-{% endfor %}
+<h2 class="mt-4">Your suggestions, {{ user.first_name }}:</h2>
+<div class="table-container mt-4">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Date of submission</th>
+                <th>Reviewed</th>
+                <th>Approved</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for suggestion in suggestion_list %}
+            <tr>
+                <td>{{ suggestion.id }}</td>
+                <td>
+                    <a href="{% url 'suggestion_detail' suggestion.pk %}">
+                        {{ suggestion }}
+                    </a>
+                </td>
+                <td>{{ suggestion.date_submitted }}</td>
+                <td class="icon-cell">{% if suggestion.reviewed %}<i class="bi bi-check text-success"></i>{% else %}<i
+                        class="bi bi-x text-danger"></i>{% endif %}</td>
+                <td class="icon-cell">{% if suggestion.approved %}<i class="bi bi-check text-success"></i>{% else %}<i
+                        class="bi bi-x text-danger"></i>{% endif %}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}
