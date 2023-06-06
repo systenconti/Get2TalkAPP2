@@ -3,8 +3,10 @@
 {% block title %}Your suggestions{% endblock %}
 
 {% block content %}
-<h1>You suggestions:</h1>
+<h1>Your suggestions {{ user.first_name }}:</h1>
 {% for suggestion in suggestion_list %}
-<p>{{ suggestion }}</p>
+<a href="{% url 'suggestion_detail' suggestion.pk %}">
+    <p>{{ suggestion }}</p>
+</a>
 {% endfor %}
 {% endblock %}

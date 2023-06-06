@@ -17,4 +17,5 @@ urlpatterns = [
     path("reports/", views.report_view, name="reports"),
     path("reports/download/", views.generate_pdf, name="generate_pdf"),
     path("suggestions/", views.SuggestionList.as_view(), name="suggestions"),
+    path("suggestions/<int:pk>/", views.SuggestionDetail.as_view(), name="suggestion_detail"),
 ]

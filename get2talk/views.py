@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.db.models.query import QuerySet
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.views.generic import View, ListView
+from django.views.generic import View, ListView, DetailView
 from django.views.generic.edit import CreateView
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -200,3 +200,9 @@ class SuggestionList(ListView):
         queryset = super().get_queryset()
         queryset = queryset.filter(user=self.request.user).order_by("-date_submitted")
         return queryset
+
+
+@method_decorator(login_required, name="dispatch")
+class SuggestionDetail(DetailView):
+    model = Suggestion
+    template_name = "suggestion_detail.html"
