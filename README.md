@@ -8,6 +8,7 @@ Language school staff management app.
 * [Features](#features)
 * [Screenshots](#screenshots)
 * [Project Status](#project-status)
+* [Features to add](#features-to-add)
 * [Contact](#contact)
 
 
@@ -37,7 +38,12 @@ fully functional and deployed to pythonanywhere.com.
 
 
 ## Project Status
-Project is: _complete_ 
+Project is: _in progress_ 
+
+
+## Features to add
+- Teacher's chat
+- Worker's suggestion system (allowing teachers to contribute in company's growth)
 
 
 ## Contact
