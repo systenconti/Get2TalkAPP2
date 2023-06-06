@@ -1,5 +1,5 @@
 from django import forms
-from .models import Student
+from .models import Student, Suggestion
 
 
 class StudentForm(forms.ModelForm):
@@ -10,3 +10,9 @@ class StudentForm(forms.ModelForm):
     def clean_name(self):
         name = self.cleaned_data["name"]
         return name.title()
+
+
+class SuggestionForm(forms.ModelForm):
+    class Meta:
+        model = Suggestion
+        fields = ("title", "description")

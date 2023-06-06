@@ -8,7 +8,7 @@ from django.views.generic.edit import CreateView
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.http import JsonResponse, HttpResponse
-from .forms import StudentForm
+from .forms import StudentForm, SuggestionForm
 from .models import Teacher, Student, Lesson, Suggestion
 from fpdf import FPDF
 import os
@@ -192,7 +192,7 @@ def generate_pdf(request):
 
 
 @method_decorator(login_required, name="dispatch")
-class SuggestionList(ListView):
+class SuggestionListView(ListView):
     model = Suggestion
     template_name = "suggestion.html"
 
@@ -203,6 +203,18 @@ class SuggestionList(ListView):
 
 
 @method_decorator(login_required, name="dispatch")
-class SuggestionDetail(DetailView):
+class SuggestionDetailView(DetailView):
     model = Suggestion
     template_name = "suggestion_detail.html"
+
+
+@method_decorator(login_required, name="dispatch")
+class AddSuggestionView(CreateView):
+    model = Suggestion
+    form_class = SuggestionForm
+    template_name = "add_suggestion.html"
+    success_url = reverse_lazy("suggestions")
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
