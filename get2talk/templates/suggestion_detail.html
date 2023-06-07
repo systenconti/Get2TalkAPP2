@@ -1,9 +1,43 @@
 {% extends 'base.html' %}
 
+{% block css %}
+<style>
+    .icon-cell {
+        text-align: center;
+    }
+
+    .icon-cell i {
+        font-size: 1.5em;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<p>{{ suggestion.id }}</p>
-<p>{{ suggestion.date_submitted }}</p>
-<p>{{ suggestion.title }}</p>
-<p>{{ suggestion.description }}</p>
-<p>{{ suggestion.approved }}</p>
+<table class="table table-light">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Date</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Reviewed</th>
+            <th>Approved</th>
+            <th>Supervisor comment</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{ suggestion.id }}</td>
+            <td>{{ suggestion.date_submitted }}</td>
+            <td>{{ suggestion.title }}</td>
+            <td>{{ suggestion.description }}</td>
+            <td class="icon-cell">{% if suggestion.reviewed %}<i class="bi bi-check text-success"></i>{% else %}<i
+                    class="bi bi-x text-danger"></i>{% endif %}</td>
+            <td class="icon-cell">{% if suggestion.approved %}<i class="bi bi-check text-success"></i>{% else %}<i
+                    class="bi bi-x text-danger"></i>{% endif %}</td>
+            <td class="icon-cell">{% if suggestion.supervisor_comment == None %}<i class="bi bi-dash-square-dotted"></i>
+                {% else %}{{ suggestion.supervisor_comment }}{% endif %}</td>
+        </tr>
+    </tbody>
+</table>
 {% endblock %}
