@@ -14,8 +14,8 @@ Language school staff management app.
 
 ## General Information
 App was created specially for Get2Talk language school. The owner needed a tool for
-easier staff management. App allows teachers to: modify students' list, report lessons, download
-monthly working hours report based on the time and dates of conducted lessons. App is
+easier staff management. App allows teachers to: modify students' list, report lessons, add suggestions to contribute to company's growth,
+download monthly working hours report based on the time and dates of conducted lessons. App is
 fully functional and deployed to pythonanywhere.com.
 
 
@@ -30,6 +30,7 @@ fully functional and deployed to pythonanywhere.com.
 ![Screenshot3](./screenshots/screenshot3.png)
 ![Screenshot4](./screenshots/screenshot4.png)
 ![Screenshot5](./screenshots/screenshot5.png)
+![Screenshot6](./screenshots/screenshot6.png)
 
 ## Features
 - Add and edit students
@@ -43,7 +44,6 @@ Project is: _in progress_
 
 ## Features to add
 - Teacher's chat
-- Worker's suggestion system (allowing teachers to contribute in company's growth)
 
 
 ## Contact
