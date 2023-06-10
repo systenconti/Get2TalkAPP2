@@ -196,6 +196,20 @@ class SuggestionListView(ListView):
     model = Suggestion
     template_name = "suggestion.html"
 
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+
+        total_submitted_count = self.model.objects.filter(user=user).count()
+
+        approved_submitted_count = self.model.objects.filter(
+            user=user, approved=True
+        ).count()
+
+        context["total_submitted_count"] = total_submitted_count
+        context["approved_submitted_count"] = approved_submitted_count
+        return context
+
     def get_queryset(self) -> QuerySet[Any]:
         queryset = super().get_queryset()
         queryset = queryset.filter(user=self.request.user).order_by("-date_submitted")

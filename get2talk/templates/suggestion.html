@@ -14,6 +14,10 @@
     .icon-cell i {
         font-size: 1.5em;
     }
+
+    .text-blue {
+        color: blue;
+    }
 </style>
 {% endblock %}
 
@@ -22,6 +26,10 @@
 <a href="{% url 'new_suggestion' %}">
     <button class="btn btn-primary">Add new suggestion</button>
 </a>
+<br>
+<br>
+<h4>Total no. of submitted suggestions: <span class="text-blue">{{ total_submitted_count }}</span></h4>
+<h4>Total no. of approved suggestions: <span class="text-blue">{{ approved_submitted_count }}</span></h4>
 <h2 class="mt-4">Your suggestions, {{ user.first_name }}:</h2>
 <div class="table-container mt-4">
     <table class="table table-hover">
