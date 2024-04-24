@@ -1,6 +1,5 @@
 # Get2TalkAPP2
 Language school staff management app.
-> Working app [_here_](http://systenconti.pythonanywhere.com)
 
 ## Table of Contents
 * [General Info](#general-information)
